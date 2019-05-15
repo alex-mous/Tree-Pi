@@ -9,10 +9,17 @@ To solve these problems, we decided to create a Christmas tree water level monit
 
 <h4>What you need:</h4>
 Raspberry Pi - The case is designed for a full-size model (we used a Raspberry Pi B+, but any model such as the 2B or 3B+ should work)
-Access to a 3D Printer and the equipment required (filament, bed adhesion, print cleanup tools etc.)
+SD Card - 8GB in size; for the Raspberry Pi
+Micro USB Power Supply - for the Raspberry Pi
+7x Standard 5mm LEDs - we used red color LEDs
 4x M2.5x7.5 machine screws
-
-
+Lots of wire (threaded core) - we recommend using the wire from dead Christmas lights!
+Lots of wire (single core) - for the water probe; this should preferably not be a material that corrodes
+Heat shrink tube - if you use this you will also need a heat gun or you could use tape instead
+Stripboard - we need a piece that is 40x5 holes
+2x20 Pin Female Header - to connect the stripboard to the Raspberry Pi
+Access to a 3D Printer and the equipment required (filament, bed adhesion, print cleanup tools etc.)
+Soldering Equipment - to solder the connections
 
 <h4>Software Setup</h4>
 The default password is TrEe+pI
