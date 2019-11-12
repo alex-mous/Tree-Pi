@@ -31,6 +31,11 @@ Strip a few inches of coating off of a piece of the single-core wire. Next, thre
 
 <h4>Assembling the LED Stick</h4>
 
+Next, we can assembly the LED stick. First, insert the LEDs into the top part (it should be a snug fit - otherwise, add some clear glue/epoxy). After the LEDs are in or the glue has dried, solder them up as shown below (with the grounds connected together and a seperate wire going to each LED's positive terminal). Thread the wires through the bottom portion of the stick, and push the top part down into the bottom part to create the finished part. (This should be another snug fit. If not, as before apply some glue.)
+
+<img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/LEDs_wiring_close.JPG" alt="Close-up of the LED wiring" height="200px"/><img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/LEDs_wiring.JPG" alt="LED wiring exposed" height="200px"/><img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/LEDs.JPG" alt="Finished LED stick" height="200px"/>
+
+
 <h4>Assembling the Raspberry Pi Case</h4>
 Finally, we can install the Raspberry Pi.
 
