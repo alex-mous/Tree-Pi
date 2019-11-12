@@ -41,7 +41,7 @@ Finally, we can install the Raspberry Pi.
 
 First, solder the wires and a 2x20 socket (on the underside, not visible in the pictures) to the strip board. Use the <a href="https://github.com/polarpiberry/Tree-Pi/blob/master/Wiring%20Version1.pdf">wiring diagram PDF</a> and the picture below to guide you! If you do make an error, do not worry too much. You can easily change which pin goes to which function in the src/hidden/pin_setup, src/hidden/leds_on and src/hidden/read files.
 
-<img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/Wiring.JPG" alt="Wiring" height="400px"/>
+<img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/Wiring.JPG" alt="Wiring" height="200px"/>
 
 After this, insert the Raspberry Pi into the case, screw in the screws, and plug in the socket. Route the wires through the slot in the side and close the lid. The final step is the add the screws!
 
