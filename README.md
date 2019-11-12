@@ -1,16 +1,17 @@
 <h1>Tree Pi</h1>
 <h2>How to build a Raspberry Pi-controlled water level monitor and alert system for natural Christmas trees</h2>
 
-<h4>Problem</h4>
+<h3>Problem</h3>
 As anyone who has had a natural Christmas tree for Christmas knows, it is difficult to tell when and how much to water the tree needs. If not done correctly, watering the tree can result in either a large mess to clean up or a tree without any needles.
 
-<h4>Solution</h4>
+<h3>Solution</h3>
 To solve these problems, I decided to create a Christmas tree water level monitor. It would have an interactive website so you can check how much water the tree has left. It would also send email reminders with the current water level and have a visual monitor for filling up the base to prevent you from overfilling and causing a mess.
 
-<h4>What you will need:</h4>
+<h3>What you will need:</h3>
 Raspberry Pi - The case is designed for a full-size model (I used a Raspberry Pi B+, but any model such as the 2B or 3B+ should work)<br>
 SD Card - 8GB in size; for the Raspberry Pi<br>
 Micro USB Power Supply - for the Raspberry Pi<br>
+A Wifi dongle - if your Raspberry Pi is not wifi capable<br>
 7x Standard 5mm LEDs - I used red color LEDs<br>
 4x M2.5x7.5 machine screws<br>
 Lots of wire (threaded core) - I recommend using the wire from dead Christmas lights!<br>
@@ -21,10 +22,25 @@ Stripboard - you need a piece that is 40x5 holes<br>
 Access to a 3D Printer and the equipment required (filament, bed adhesion, print cleanup tools etc.)<br>
 Soldering Equipment - to solder the connections<br>
 
-<h4>Hardware Setup</h4>
+<h3>Hardware Setup</h3>
+First, print all of the STL files in the STL folder on your 3D printer. Make sure to print the Measuring Stick in very high quality, or threading the wires will be very difficult!
+<h4>Assembling the Measuring Stick</h4>
+Strip a few inches of coating off of a piece of the single-core wire. Next, thread this into one of the holes on the Measuring Stick as shown by the red lines on the picture below. Once the end of the wire appears in the correct horizontal strip (one with the red arrows), hook it out using a skewer or metal pick and weave it in and out of the holes. Then repeat those steps for the rest of the holes, until it looks like the picture below. This is a slow and painful process, but you should hopefully not have to do it again!
 
+<img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/Measuring_stick_annotated.JPG" alt="Wires highlighted in measuring stick" height="400px"/><img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/Measuring_stick_back.JPG" alt="Finished measuring stick" height="400px"/>
 
-<h4>Software Setup</h4>
+<h4>Assembling the LED Stick</h4>
+
+<h4>Assembling the Raspberry Pi Case</h4>
+Finally, we can install the Raspberry Pi.
+
+First, solder the wires and a 2x20 socket (on the underside, not visible in the pictures) to the strip board. Use the <a href="https://github.com/polarpiberry/Tree-Pi/blob/master/Wiring%20Version1.pdf">wiring diagram PDF</a> and the picture below to guide you! If you do make an error, do not worry too much. You can easily change which pin goes to which function in the src/hidden/pin_setup, src/hidden/leds_on and src/hidden/read files.
+
+<img src="https://github.com/polarpiberry/Tree-Pi/blob/master/Pictures/Wiring.JPG" alt="Wiring" height="400px"/>
+
+After this, insert the Raspberry Pi into the case, screw in the screws, and plug in the socket. Route the wires through the slot in the side and close the lid. The final step is the add the screws!
+
+<h3>Software Setup</h3>
 
 First, you need to set up the Raspberry Pi  with Raspbian Lite. See <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">the Raspberry Pi website for instructions.</a> 
 
@@ -41,7 +57,7 @@ Once this is done, download this repository with:
   git clone https://github.com/polarpiberry/Tree-Pi.git
   
 Then move the contents of the folder to the location of the web server:
-  sudo cp -r Tree-Pi/* /var/www/html/
+  sudo cp -r Tree-Pi/src/* /var/www/html/
 
 And delete the no longer needed Tree-Pi folder:
   sudo rm -r Tree-Pi/*
@@ -70,5 +86,5 @@ Finally, change the permissions of the web files (and make them executable) so t
 
 Shutdown the Raspberry Pi, disconnect the peripherals and place it under your Christmas tree. Insert the measuring stick into the water base and make sure that the LEDs are clearly accessible. Then plug in the power again and your Raspberry Pi Christmas tree water level monitor is ready for use!
 
-<h4>Using Tree Pi</h4>
+<h3>Using Tree Pi</h3>
 This system is designed to stay on all the time. When you need to shut it down, the website has a Shutdown page.
