@@ -1,0 +1,4 @@
+#!/bin/bash
+addr=`cat /var/www/html/logs/address.txt`
+percent_level=`cat /var/www/html/logs/latest.txt`
+echo -e "To: $addr\nFrom: Tree Pi\nSubject: Christmas Tree Water Level\nThe christmas tree water level is at $percent_level%!" | ssmtp -t

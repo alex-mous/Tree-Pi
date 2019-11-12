@@ -1,0 +1,39 @@
+#!/bin/bash
+#Code to read and stores the water level in logs/raw-level.txt
+#Ran automatically every minute by cron
+
+#Declare varibles
+declare -a water_level
+declare -a water_in
+water_in=(23 7 6 20 5 25 24 13 21 19 26 16 8 11)
+water_in_len=14
+water_out=12
+
+level=14
+
+#Set output pin to high, therfore charging the water
+gpio -g write $water_out 1
+
+#Read the measuring point from lowest to highest on the measuring stick, anf stores result in array
+for ((i=0; i<$water_in_len; i++));
+do
+	pin=${water_in[$i]}
+	water_level[$i]=`gpio -g read $pin`
+done
+
+#Set output pin to low again
+gpio -g write $water_out 0
+
+#Iterate through measuring points from lowest to highest and determines the first one with level 0
+#Set varible level to equal the point at which it reads is the first zero, therefore determining the water level
+for ((i=0; i<$water_in_len; i++));
+do
+	if [ ${water_level[$i]} -eq 0 ]
+	then
+		level=$i
+	break
+	fi
+done
+
+#Write $level to raw-level.txt
+echo $level > /var/www/html/logs/raw-level.txt

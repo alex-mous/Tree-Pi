@@ -1,0 +1,161 @@
+/*Main css file referenced by all pages
+this file contains most of the css for the website (php adjusted css is in the php files)*/
+
+
+
+/*----------------------------Home page-------------------------------*/
+div.home {
+	min-width: 650px;
+}
+h1.alert {
+	text-align: center;
+	font-size: 2em;
+	font-weight: normal;
+}
+p.msg {
+	text-align: center;
+	font-size: 1em;
+}
+svg.star {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 350px;
+	margin: auto;
+	padding: 3px;
+	z-index: 1;
+	min-width: 700px;
+}
+h3.measurement {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 470px;
+	margin: auto;
+	text-align: center;
+	font-size: 1.2em;
+	line-height: 1.85;
+	color: white;
+	z-index: 2;
+	min-width: 700px;
+}
+svg.tree {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 450px;
+	margin: auto;
+	z-index: 3;
+	min-width: 700px;
+}
+
+/*----------------------------Header-------------------------------*/
+
+div.header {
+	padding: 5px;
+	border-bottom-style: dotted;
+	border-width: 5px;
+	color: #ff1111;
+	text-align: center;
+	position: relative;
+	min-width: 500px;
+}
+div.header h1 {
+	display: inline;
+	font-size: 4em;
+}
+div.header h2 {
+	font-size: 1.5em;
+}
+div.header img.imgl {
+	display: inline;
+	height: 50px;
+	width: 50px;
+	padding-right: 25px;
+}
+div.header img.imgr {
+	display: inline;
+	height: 50px;
+	width: 50px;
+	padding-left: 25px;
+}
+body {
+	font-family: Verdana, Arial, sanserif;
+	background-color: #328832;
+}
+span.link {
+	font: italic bold 1.25em black;
+}
+span.spacer {
+	padding-left: 10%;
+}
+a.header {
+	color: #ff1111;
+	text-decoration: none;
+	min-width: 500px;
+}
+div.navbar {
+	width: 100%;
+	text-align: center;
+	border-bottom-style: dotted;
+	border-width: 5px;
+	color: #ff1111;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: 30px;
+}
+
+/*----------------------------Footer-------------------------------*/
+
+footer {
+	font-family: Verdana, Arial, sanserif;
+	font-weight: bold;
+	font-size: 0.5em;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	text-align: center;
+	z-index: 10000000000;
+}
+
+/*----------------------------Button and form style-------------------------------*/
+
+input[type=submit] {
+	text-decoration: none;
+	border: 2px solid black;
+	background-color: red;
+	cursor: grab;
+	width: 150px;
+	height: 45px;
+	font-weight: bold;
+	font-size: 1.125em;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+form.general {
+	padding-top: 50px;
+	text-align: center;
+}
+
+/*----------------------------Sitemap-------------------------------*/
+
+
+div.sitemaptable {
+	display:inline-block;
+	min-width: 810px;
+}
+div.sitemaptable table{
+	font-size:1em;
+}
+div.sitemaptable caption {
+	font-size:2em;
+}
+div.sitemaptable td {
+	text-align: left;
+}
+div.sitemaptable td#TABLEPADDING {
+	padding-right: 100px;
+}

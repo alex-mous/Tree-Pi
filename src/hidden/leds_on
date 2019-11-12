@@ -1,0 +1,73 @@
+#!/bin/bash
+#This code loops every $loop_delay, updating the leds with the current level of water
+#It only show the top $leds_len measuring points (below the $max level)
+#Supply the time (in minutes) after the command
+#If not time is supplied, a default 5min is used
+
+trap ctrl_c INT
+
+function ctrl_c() {
+	off_leds
+	exit 1
+}
+
+loop_delay=0.1
+
+declare -a leds
+leds=(18 15 4 14 3 17 2) #Leds in sequence from led 1 to led 7
+leds_len=7 #set to length of leds array
+
+
+
+function off_leds() {
+	for ((i=0; i<$leds_len; i++)); do
+		gpio -g write ${leds[$i]} 0
+	done
+}
+
+
+
+
+max=`cat /var/www/html/logs/max-level.txt` #read max level
+
+
+#Set start and end time depending on value in logs/led-time.txt
+start=$SECONDS
+if [[ $1 -gt 0 && $1 -lt 60 ]]; then
+	end=$1 #set end to be the first argument supplied
+else
+	end=5
+fi
+end=`expr $end '*' 60` #multiply the delay by 60 to get seconds
+end=`expr $end + $start` #add the delay seconds to the start(current) seconds to get the finish time
+
+
+#Loop that checks the water_level and then updates the leds
+#Runs until time in logs/led-time.txt has passed
+while [[ $SECONDS -lt $end ]]; do
+	sudo /var/www/html/.hidden/read
+	level=`cat /var/www/html/logs/raw-level.txt`
+
+	led_level=`expr $max - $leds_len` #level below which there are no more leds to show, so as to only show the top $leds_len of data
+	led_level=`expr $level - $led_level` #level above which the leds should not be turned on
+	if [[ $level -lt 0 ]]; then #if less than 0, there are no leds to show
+		led_level=0
+	fi
+	if [[ $led_level -gt 7 ]]; then #if less than 0, there are no leds to show
+		led_level=0
+	fi
+
+	#Loop to set leds
+	for ((i=0; i<$led_level; i++)); do
+		gpio -g write ${leds[$i]} 1
+	done
+
+	#sleep a certain amount of time between loops
+	sleep $loop_delay
+
+done
+
+#Turn the leds off
+for ((i=0; i<$leds_len; i++)); do
+	gpio -g write ${leds[$i]} 0
+done

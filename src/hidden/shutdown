@@ -1,0 +1,8 @@
+#!/bin/sh
+#Code to disable the gpio and shutdown
+for i in `seq 2 27`
+do
+echo $i > /sys/class/gpio/unexport
+done
+sleep 5
+sudo /sbin/shutdown -h now

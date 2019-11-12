@@ -1,0 +1,2 @@
+#!/bin/bash
+/var/www/html/.hidden/leds_on $1 &

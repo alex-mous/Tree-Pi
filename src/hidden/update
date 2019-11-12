@@ -1,0 +1,42 @@
+#!/bin/bash
+#Code to that updates the value in logs/latest.txt
+#Ran automatically every minute by cron
+
+#Declare varibles
+min_level=`cat /var/www/html/logs/min-level.txt`
+max_level=`cat /var/www/html/logs/max-level.txt`
+range=`expr $max_level - $min_level`
+frequency=15
+curr_min=`date +%M`
+percent_leve=0
+sudo /var/www/html/.hidden/read
+level=`cat /var/www/html/logs/raw-level.txt`
+
+#Calculate the percentage full from the max and min levels and the read level
+percent_level=`expr $level - $min_level`
+percent_level=`expr $percent_level '*' 100`
+percent_level=`expr $percent_level / $range`
+
+#Check that the percentage is between 0 and 100 and post according messages into latest.txt and latest-time.txt
+if [[ "$percent_level" -lt 0 ]]; then
+	echo `date +%H:%M\ \h\o\u\r\s\ \o\n\ %d\ %b\ %Y\.\ \M\i\n\ \l\e\v\e\l\ \s\e\t\ \t\o\o\ \h\i\g\h\;\ \p\l\e\a\s\e\ \d\e\c\r\e\a\s\e\ \i\t\ \t\o\ \m\a\k\e\ \t\h\i\s\ \u\p\d\a\t\e\.` > /var/www/html/logs/latest-time.txt
+	echo 0 > /var/www/html/logs/latest.txt
+	exit 1
+elif [[ "$percent_level" -gt 100 ]]; then
+	echo `date +%H:%M\ \h\o\u\r\s\ \o\n\ %d\ %b\ %Y\.\ \M\a\x\ \l\e\v\e\l\ \s\e\t\ \t\o\o\ \l\o\w\;\ \p\l\e\a\s\e\ \i\n\c\r\e\a\s\e\ \i\t\ \t\o\ \m\a\k\e\ \t\h\i\s\ \u\p\d\a\t\e\.` > /var/www/html/logs/latest-time.txt
+	echo 0 > /var/www/html/logs/latest.txt
+	exit 1
+else
+	echo `date +%H:%M\ \h\o\u\r\s\ \o\n\ %d\ %b\ %Y\.` > /var/www/html/logs/latest-time.txt
+	echo $percent_level > /var/www/html/logs/latest.txt
+	echo $level > /var/www/html/logs/raw-level.txt #raw level for the leds
+fi
+
+#Store the value into a main log file every $frequency minutes (not overwritten each time, unlike latest.txt and latest-time.txt
+timing=`expr $curr_min % $frequency`
+if [[ $timing -eq 0 ]]
+then
+	contents=`date +%H:%M\ %d/%b/%Y`
+	contents="$contents $percent_level"
+	echo $contents >> /var/www/html/logs/log.txt
+fi
