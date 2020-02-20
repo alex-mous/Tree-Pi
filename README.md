@@ -1,5 +1,5 @@
 <h1>Tree Pi</h1>
-<h2>How to build a Raspberry Pi-controlled water level monitor and alert system for natural Christmas trees</h2>
+<h2>Build a Raspberry Pi-controlled water level monitor and alert system for natural Christmas trees!</h2>
 
 <h3>Problem</h3>
 As anyone who has had a natural Christmas tree for Christmas knows, it is difficult to tell when and how much to water the tree needs. If not done correctly, watering the tree can result in either a large mess to clean up or a tree without any needles.
@@ -79,7 +79,7 @@ On the next line, (starts with AuthPass) replace <YOUR_GMAIL_PASSWORD_HERE> with
 
 Finally, copy this file to /etc/ssmtp/ssmtp with
   sudo cp ssmtp.conf /etc/ssmtp/ssmtp.conf
-  
+
 After this, you need to change the email address that will recieve alerts. Open this file with:
   sudo nano logs/address.txt
 
