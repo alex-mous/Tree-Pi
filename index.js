@@ -182,7 +182,8 @@ app.post("/getsettings", async (req, res) => { //Return the min and max from con
 		success: true,
 		settings: {
 			min: config.min,
-			max: config.max
+			max: config.max,
+			email: config.toEmail
 		}
 	}));
 });
@@ -192,12 +193,14 @@ app.post("/setsettings", async (req, res) => { //Update the min and max in confi
 	let status = { success: true };
 	let min = parseInt(req.body.min);
 	let max = parseInt(req.body.max);
-	if (!isNaN(min) && !isNaN(max) && min >= 0 && min <= 13 && max >= 1 && max <= 14 && max > min) {
+	let email = req.body.email;
+	if (!isNaN(min) && !isNaN(max) && min >= 0 && min <= 13 && max >= 1 && max <= 14 && max > min && req.body.email) {
 		config.min = req.body.min;
 		config.max = req.body.max;
+		config.toEmail = req.body.email;
 		setConfig(config);
 	} else {
-		status = { success: false, msg: "Invalid minimum/maximum values or not supplied. Must include parameters min and max, which are between 0 and 13 and 1 and 14, inclusive, respectively, as well as max being greater than min" };
+		status = { success: false, msg: "Invalid minimum/maximum values or not supplied. Must include parameters min and max, which are between 0 and 13 and 1 and 14, inclusive, respectively, as well as max being greater than min. Finally, email must be included" };
 	}
 	res.send(JSON.stringify(status));
 });
@@ -225,14 +228,14 @@ app.post("/shutdown", (req, res) => { //Shutdown the computer (if the passcode i
 });
 
 app.post("/fillingmode", async (req, res) => { //Start filling mode (show lights based on current level) for timeout specified
-	let timeout = parseInt(req.body && req.body.timeout);
-	if (isNaN(timeout)) timeout = 300; //Default to 5 minute timeout
-	if (timeout > 900) timeout = 900; //Maximum allowed timeout of 15 minutes
+	let requestedTimeout = 60*parseInt(req.body && req.body.timeout); //In minutes, so convert to seconds
+	let timeout = 300; //Actual timeout - default to 5 minutes
+	if (!isNaN(timeout) && timeout > 0 && timeout <= 900) timeout = requestedTimeout; //Set timeout if valid
 	console.log(`Request for filling mode with timeout of ${timeout} seconds`);
 	fillingMode(timeout);
 	res.send(JSON.stringify({
-		success: timeout == (req.body && req.body.timout),
-		msg: (timeout == (req.body && req.body.timeout)) ? "Defaulting to 5 minute timeout - invalid timeout supplied" : undefined
+		success: timeout == requestedTimeout,
+		msg: (timeout == requestedTimeout) ? "Defaulting to 5 minute timeout - invalid timeout supplied" : undefined
 	}));
 });
 

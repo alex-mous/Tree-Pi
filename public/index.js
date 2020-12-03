@@ -89,6 +89,7 @@ const showSettings = (settings) => {
 	document.querySelector("#minRange").value = settings.min;
 	document.querySelector("#maxRangeTxt").innerText = settings.max;
 	document.querySelector("#maxRange").value = settings.max;
+	document.querySelector("#emailInput").value = settings.email;
 }
 
 /**
@@ -127,7 +128,8 @@ const onSettingsForm = (ev) => {
 		},
 		body: JSON.stringify({
 			min: document.querySelector("#minRange").value,
-			max: document.querySelector("#maxRange").value
+			max: document.querySelector("#maxRange").value,
+			email: document.querySelector("#emailInput").value
 		})
 	})
 		.then(res => res.json())
