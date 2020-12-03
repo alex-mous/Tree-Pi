@@ -1,0 +1,18 @@
+[Unit]
+Description=TreePi NodeJS Server
+Documentation=https://github.com/alex-mous/tree-pi
+After=network.target
+
+[Service]
+User=root
+Type=forking
+WorkingDirectory=/server
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=treepi-server
+Restart=Always
+RestartSec=1
+ExecStart=/bin/bash /server/start-server
+
+[Install]
+WantedBy=multi-user.target

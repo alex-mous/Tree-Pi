@@ -1,0 +1,24 @@
+#!/bin/bash
+# Reads percentage (0-100) from arguments and sets LEDs accordingly
+
+if [[ $# -ne 1 || $1 -lt 0 || $1 -gt 100 ]]; then
+	echo "Illegal/nonexistent required argument"
+	echo -e "\nUsage: led-control PERCENTAGE\nSet the LEDs specified in the script to on/off depending on PERCENTAGE\n\n\tPERCENTAGE must be a value between 0 and 100, inclusive"
+	exit 2
+fi
+
+declare -a leds
+leds=(18 15 4 14 3 17 2) #Leds in sequence from lowest LED (0) to highest LED (6)
+
+level=`expr '(' '(' $1 + 5 ')' '*' ${#leds[@]} ')' '/' 100` #Get the LED index to fill up to (LEDs length is highest possible level, with rounding)
+echo "[led-control] Setting $level LEDs out of ${#leds[@]} total"
+
+for ((i=0; i<${#leds[@]}; i++)); do #Write each LED a high/low value depending on the level calculated
+	if [[ $i -lt $level ]]; then
+		echo "[led-control] Wrote $i LED high"
+		gpio -g write ${leds[$i]} 1
+	else
+		echo "[led-control] Wrote $i LED low"
+		gpio -g write ${leds[$i]} 0
+	fi
+done

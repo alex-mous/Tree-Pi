@@ -1,0 +1,20 @@
+#!/bin/bash
+# Reads the current water level and prints it to stdout
+
+declare -a water_level #Output values
+declare -a water_in #Inputs
+water_in=(23 7 6 20 5 25 24 13 21 19 26 16 8 11)
+
+max_level=0 #Maximum water level read
+
+#Read the measuring point from lowest to highest on the measuring stick
+for ((i=0; i<${#water_in[@]}; i++));
+do
+	pin=${water_in[$i]}
+	curr=`gpio -g read $pin`
+	if [ $curr -eq 1 ]; then
+		max_level=$i
+	fi
+done
+
+echo $max_level

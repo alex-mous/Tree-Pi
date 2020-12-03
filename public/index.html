@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TreePi Christmas Tree Water Monitor</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/style.css">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="apple-touch-icon" href="/maskable_192x192.png">
+	<meta name="viewport" content="width=700" />
+	<meta name="theme-color" content="#ffffff" />
+    </head>
+    <body>
+        <div class="row">
+            <div class="col text-center py-3">
+                <p class="h1">TreePi</p>
+		<p class="lead">Raspberry Pi-powered Christmas tree water level monitor</p>
+            </div>
+        </div>
+	<ul class="nav nav-tabs justify-content-center" id="navTabs" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" id="homeTab" data-toggle="tab" href="#home">Home</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="graphTab" data-toggle="tab" href="#graph">Graph</a>
+		</li>			
+		<li class="nav-item">
+			<a class="nav-link" id="settingsTab" data-toggle="tab" href="#settings">Settings</a>
+		</li>			
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane fade show active" id="home" role="tabpanel">
+			<div class="row">
+				<div class="col text-center py-3">
+					<p class="h3 text-center py-2">Tree Status</p>
+					<p class="h4 text-center py-1 text-warning" id="currLevel">Loading...</p>
+				</div>
+				<noscript>Please enable JavaScript for this app to function</noscript>
+			</div>
+			<div class="row d-none" id="installBtnCtn">
+				<div class="col text-center py-3">
+					<p class="h3 text-center py-2">Install Web App</p>
+					<p class="h5 text-center py-1">Install the TreePi web app for more reliable usage</p>
+					<button class="btn btn-primary btn-lg" id="installBtn">Install</button>
+				</div>
+			</div>
+			<hr>
+        		<div class="row py-3">
+				<div class="tree-container">
+					<!--/*SVG code for the star on top of the tree*/-->
+					<!--/*  calculating x and y from radius (r) and angle (n) (for star) x = cos(n) * r + xoffset
+ 					and y = -1 * (sin(n) * r) + yoffest (because y increase as you go down the screen)
+ 					angle of star is 360/5 = 72 degrees but peak at 90 so angles are 18, 90, 162, 234 and 306;
+ 					inner point created by another circle with radius r/2 and also angles offset by 36 degrees
+ 					so angles are 54, 126, 198, 270 and 342
+					*/-->
+					<svg class="star">
+						<rect width="700px" height="70px" x="0" y="0" fill="#eeeeee" />
+						<svg width="50px" height="50px" x="325px" y="10px" viewbox="0 0 100 100">
+							<path d="M50 0 L35.3 29.8 L5 31 L26.2 57.7 L20 90 L50 75 L80 90 L73.8 57.7 L95 31 L64.7 29.8 L50 0" fill="gold" stroke="none" />
+						</svg>
+					</svg>
+		
+					<!--/*Labels for visual reference of how full the tree is*/-->
+		
+					<h3 class="measurement">	100%	<br>	90%	<br>	80%	<br>	70%	<br>	60%	<br>	50%	<br>	40%	<br>	30%	<br>	20%	<br>	10%	<br>	0% </h3>
+		
+					<!--/*SVG code for the mask and border of the tree branches and trunk*/-->
+					<svg class="tree" width="700px" height="400px" viewBox="-99 1 399 299" preserveAspectRatio="none">
+						<g class="masktree">
+							<path d="M0 0 L200 0 L200 50 L100 0 L0 50 L50 50 L0 75 L50 75 L0 100 L50 100 L0 125 L50 125 L0 150 L50 150 L0 175 L50 175 L0 200 L50 200 L0 225 L50 225 L0 250 L50 250 L0 275 M200 50 L150 50 L200 75 L150 75 L200 100 L150 100 L200 125 L150 125 L200 150 L150 150 L200 175 L150 175 L200 200 L150 200 L200 225 150 225 L200 250 L150 250 L200 275 Z" fill="#eeeeee" stroke="none"/>
+							<path d="M0 275 L0 300 L75 300 L75 275 L0 275 M125 275 L125 300 L200 300 L200 275 L125 275 Z" fill="#eeeeee" stroke="none" />
+							<rect width="101px" height="300px" x="-100" y="0" fill="#eeeeee" />
+							<rect width="101px" height="300px" x="199" y="0" fill="#eeeeee" />
+						</g>
+						<!--/*SVG code for the outline or the tree branches and trunk*/-->
+						<g class="bordertree">
+							<path d="M200 50 L100 0 L0 50 L50 50 L0 75 L50 75 L0 100 L50 100 L0 125 L50 125 L0 150 L50 150 L0 175 L50 175 L0 200 L50 200 L0 225 L50 225 L0 250 L50 250 L0 275 M200 50 L150 50 L200 75 L150 75 L200 100 L150 100 L200 125 L150 125 L200 150 L150 150 L200 175 L150 175 L200 200 L150 200 L200 225 150 225 L200 250 L150 250 L200 275" fill="none" stroke="#328832" stroke-width="3px"/>
+							<path d="M0 275 L75 275 L75 300 L125 300 L125 275 L200 275" fill="none" stroke="#328832" stroke-width="3px" />
+						</g>
+					</svg>
+					
+					<!--/*SVG and HTML code for the water part of the rising water animation*/-->
+					<svg class="wave" width="500px" height="20px" viewBox="0 0 720 44" preserveAspectRatio="none">
+						<path d="m 0.04289559,11.271448 c 0,0 28.21305541,-10.56188569 44.97380341,-10.56188576 16.760748,-7e-8 28.213058,10.56188576 44.973807,10.56188576 16.760744,0 28.213054,-10.56188569 44.973804,-10.56188576 16.76075,-7e-8 28.21306,10.56188576 44.97381,10.56188576 16.76075,0 28.21305,-10.56188531 44.9738,-10.56188576 16.76075,-4.5e-7 28.21306,10.56188676 44.9738,10.56188576 16.76075,-10e-7 28.21306,-10.56188501 44.97381,-10.56188576 16.76075,-7.5e-7 28.21305,10.56188576 44.9738,10.56188576 16.76075,0 28.21307,-10.56188651 44.97381,-10.56188576 16.76075,7.5e-7 28.21304,10.56188476 44.97379,10.56188576 16.76075,1e-6 28.21307,-10.56188576 44.97382,-10.56188576 16.76075,0 28.21307,10.56188676 44.97381,10.56188576 16.76075,-10e-7 28.21304,-10.56188501 44.97379,-10.56188576 16.76075,-7.5e-7 28.21307,10.56188576 44.97382,10.56188576 16.76075,0 28.21305,-10.56188651 44.9738,-10.56188576 16.76075,7.5e-7 44.9738,10.56188576 44.9738,10.56188576 V 42.957105 H 0.04289559 Z" stroke="none" fill="blue" />
+					</svg>
+					<svg class="wavebox" width="500px" height="30px" viewBox="0 0 720 50" preserveAspectRatio="none">
+						<rect fill="blue" width="720" height="50" x="0.26726952" y="7.9291615" />
+					</svg>
+				
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="graph" role="tabpanel">
+	        	<div class="row py-3">
+	           		<div class="col text-center">
+        	       			<p class="m-0 py-2 h4">Water Level</p>
+					<p class="m-0 py-1 h5">Over the past <span id="waterLevelHours">24</span> hours</p>
+                			<hr class="w-50">
+					<form id="hoursForm">
+
+						<div class="input-group px-4">
+							<div class="input-group-prepend">
+								<label class="input-group-text" for="hoursRange">Hours</label>
+							</div>
+							<input class="input-group-append form-control" type="text" id="hoursRange" name="maxhours" placeholder="24">
+							<div class="input-group-append">
+								<button class="form-control btn btn-primary">Update Hours</button>
+							</div>
+						</div>
+					</form>
+                			<hr class="w-50">
+                			<div style="min-height:50vw; min-width: 75vw" id="chartContainer">Not enough data to display</div>
+                			<hr class="w-50">
+            			</div>
+        		</div>
+			<div class="row">
+				<div class="col h5 text-center py-2">
+					Download data as a JSON file: <a href="/data.json">data.json</a>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="settings" role="tabpanel">
+			<div class="row py-3">
+				<div class="col text-center">
+					<p class="m-0 py-2 h4">Settings</p>
+				</div>
+			</div>
+       			<hr class="w-50">
+			<div class="row py-3">
+				<div class="col text-center">
+					<form id="settingsForm">
+						<div class="form-group px-4">
+							<label class="font-weight-bold" for="minRange">Minimum Value</label>
+							<p>Current value: <span id="minRangeTxt"></span></p>
+							<input class="form-control" type="range" id="minRange" name="min" min="0" max="13" step="1">
+						</div>
+						<div class="form-group px-4">
+							<label class="font-weight-bold" for="maxRange">Maximum Value</label>
+							<p>Current value: <span id="maxRangeTxt"></span></p>
+							<input class="form-control" type="range" id="maxRange" name="max" min="1" max="14" step="1">
+						</div>
+						<button class="btn btn-success">Update</button>
+					</form>
+				</div>
+			</div>
+			<hr>
+			<div class="row py-3">
+				<div class="col text-center">
+					<p class="m-0 py-2 h4">Shutdown</p>
+				</div>
+			</div>
+       			<hr class="w-50">
+			<div class="row py-3">
+				<div class="col text-center">
+					<form id="shutdownForm">
+						<div class="input-group px-4">
+							<input class="form-control" type="password" id="password" name="password" placeholder="Shutdown password">
+							<div class="input-group-append">
+								<button class="form-control btn btn-danger">Shutdown Now</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col h5 text-center py-2">
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col text-center text-muted py-1">
+			Copyright (c) 2020, Alex Mous
+			<br>
+			Download certificate to install web app: <a href="/treepi.crt">treepi.crt</a>
+		</div>
+	</div>
+	<hr>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript" src="/index.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+
+    </body>
+</html>
+

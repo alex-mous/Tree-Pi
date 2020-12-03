@@ -1,0 +1,51 @@
+#!/bin/bash
+# Setup LEDs as outputs and write 0, as well as configure the read pins for the meaasuring stick
+
+#Measuring stick (all inputs except for last pin that is used to "charge" the water)
+#	BCM #
+#	5
+#	6
+#	7
+#	8
+#	11
+#	13
+#	16
+#	19
+#	20
+#	21
+#	23
+#	24
+#	25
+#	26
+#	12 (output)
+
+#Lights (outputs)
+#	2
+#	3
+#	4
+#	14
+#	15
+#	17
+#	18
+
+declare -a leds
+leds=(18 15 4 14 3 17 2) #Leds in sequence from led 1 to led 7
+
+declare -a water_in
+water_in=(23 7 6 20 5 25 24 13 21 19 26 16 8 11) #water measuring stick input pins
+water_out=12 #water measuring stick output pin
+
+gpio -g write $water_out 1 #make sure output pin is on (so that the water is charged)
+
+#Configure internal (~50k) pull-down on the water measuring stick inputs
+for ((i=0; i<${#water_in[@]}; i++));
+do
+	gpio -g mode ${water_in[$i]} down
+done
+
+#Turn off all of the leds (automatically turned tho show when booting)
+for ((i=0; i<${#leds[@]}; i++));
+do
+	gpio -g write ${leds[$i]} 0
+done
+

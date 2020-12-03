@@ -1,0 +1,6 @@
+#!/bin/bash
+# Initialize the pins and start the web server in the background
+
+/server/scripts/pin-setup #Run the pin setup
+echo "Initial level `/server/scripts/read-level`" #Test read
+/usr/local/bin/forever start --sourceDir=/server --workingDir=/server -a -l /server/Forver-Status.log -o Status.log -e Error.log --minUptime 30000 --spinSleepTime 2500 index.js

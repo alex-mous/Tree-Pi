@@ -1,0 +1,22 @@
+{
+  "background_color": "#EEEEEE",
+  "theme_color": "#EEEEEE",
+  "description": "TreePi Raspberry Pi-powered Christmas tree water level monitor and assistant",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "maskable_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "maskable_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "TreePi Monitor",
+  "short_name": "TreePi",
+  "start_url": "/"
+}

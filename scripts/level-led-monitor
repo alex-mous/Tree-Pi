@@ -1,0 +1,24 @@
+#!/bin/bash
+# Reads current water level and sets LEDs accordingly for a timeout specified (in seconds) with min and max range specified
+
+if [[ $# -ne 3 || $1 -lt 0 || $2 -lt 0 || $3 -le $2 ]]; then #Verify arguments
+	echo "Illegal/nonexistent required argument"
+	echo -e "\nUsage: level-led-monitor TIMEOUT MIN MAX\nRead the current water level and set the LEDs specified in the script to on/off depending on that level until TIMEOUT seconds have passed\n\n\tTIMEOUT must be an integer greater than 0\n\tMIN must be the number of the lowest possible water level (greater than or equal to 0)\n\tMAX must be the number of the highest possible water level (greater than MIN)"
+	exit 2
+fi
+
+echo "[level-led-monitor] Starting loop..."
+
+while [[ $SECONDS -lt $1 ]]; do #Loop until timeout is reached
+	level=`/server/scripts/read-level` #Read the raw level
+
+	percent=`expr '(' 100 '*' '(' $level - $2 ')' ')' '/' '(' $3 - $2 ')'` #Calculate the percentage
+
+	echo "[level-led-monitor] Read level of ${level} - percentage ${percent}%"
+
+	/server/scripts/led-control $percent
+done
+
+/server/scripts/led-control 0 #Reset LEDs to off
+
+echo "[level-led-monitor] LED Monitoring completed"
