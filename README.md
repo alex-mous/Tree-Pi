@@ -35,6 +35,9 @@ Now change to the location of the web server:
 Install the code:
   `npm install .`
 
+Install a required dependency to autostart the code:
+  `npm install forever -g`
+
 And open the config.json file so that you can receive emails:
   `sudo nano config.json`
   Inside of this file, replace YOUR_GMAIL_ADDRESS with your email address (must be Gmail, example: johndoe@gmail.com), YOUR_GMAIL_PASSWORD with your Google/Gmail app password, 
