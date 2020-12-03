@@ -13,7 +13,7 @@ const httpApp = express(); //HTTP app for redirecting
 const HTTPS_PORT = 443;
 const HTTP_PORT = 80;
 
-
+const MIN_PERCENT = 50; //Percentage below which to send out an email
 
 let config = require("./config.json"); //Config file for max/min values
 
@@ -22,15 +22,14 @@ let dataLog = require("./dataLog.json"); //Log for timestamp/level measurements
 
 let readingFlag = false; //Reading flag to prevent concurrent reading of measuring stick
 let ledsOnFlag = false; //LEDs on flag to prevent concurrent running on LED mode
+let emailSentFlag = false; //Email alert for water level
 
 let transporter = nodemailer.createTransport({ //Email transporter
-	host: "smtp.gmail.com",
-	port: 587,
-	secure: false,
+	service: "gmail",
 	auth: {
 		user: config.googleEmail,
-		pass: config.googlePswd,
-	},
+		pass: config.googlePassword,
+	}
 });
 
 let emailMessage = { //Default email message
@@ -88,11 +87,11 @@ const getCurrentLevel = () => {
  * @async
  */
 const fillingMode = async (timeout) => {
-	if (ledOnMode) return
-	ledOnMode = true;
+	if (ledsOnFlag) return
+	ledsOnFlag = true;
 	return new Promise((resolve, reject) => {
 		exec(`./scripts/level-led-monitor ${timeout} ${config.min} ${config.max}`, (err, stdout, stderr) => {
-			ledOnMode = false;
+			ledsOnFlag = false;
 			if (err) {
 				console.log("Error! ", err);
 				reject(err);
@@ -105,6 +104,43 @@ const fillingMode = async (timeout) => {
 	});
 }
 
+/**
+ * Check if an email needs to be sent based on the level and send it if it does
+ * @param {number} level Current water level
+ * @async
+ */
+const checkMail = (level) => {
+	let percent = calculatePercent(level);
+	if (percent > MIN_PERCENT) {
+		emailSentFlag = false; //Above safe level
+		return; //Don't send out an alert
+	}
+	if (emailSentFlag) { //Don't send an email if it was already sent for the tree being low
+		return;
+	}
+	transporter.sendMail(emailMessage, (err, info) => {
+		if (err) {
+			console.log("Error while sending email: ", err);
+			return;
+		}
+		emailSentFlag = true; //Successfully sent email
+		console.log("Successfully sent out email alert");
+	});
+}
+
+/**
+ * Calculate the percent full given a level
+ * @param {number} level Current level (0-14)
+ * @returns {number} Percentage (0-100)
+ */
+const calculatePercent = (level) => {
+	if (level > config.max) { //Reset max level if higher than current
+		config.max = level;
+		console.log("Updated maximum level to", level);
+		setConfig(config);
+	}
+	return 100*(level-config.min)/(config.max-config.min);
+}
 
 
 //Routes on HTTPS server
@@ -113,12 +149,7 @@ app.use(bodyParser.json()); //Read JSON from requests
 
 app.post("/getcurrent", async (req, res) => {
 	let level = await getCurrentLevel();
-	if (level > config.max) { //Reset max level if higher than current
-		config.max = level;
-		console.log("Updated maximum level to", level);
-		setConfig(config);
-	}
-	let percent = 100*(level-config.min)/(config.max-config.min);
+	let percent = calculatePercent(level);
 	console.log(`Request for current level. Read at ${percent}%`);
 	res.send(JSON.stringify({
 		success: percent >= 0 && percent <= 100,
@@ -131,13 +162,19 @@ app.post("/getdata", async (req, res) => { //Return the data for a given number 
 	console.log(`Request for data with a requested amount of ${hours_back} hours back`);
 	let minTime = new Date().valueOf() - (hours_back * 60 * 60 * 1000); //Current millis time minus amount of hours back
 	let data = dataLog.arr.filter((obj) => obj[0] > minTime);
-	console.log(data);
 	res.send(JSON.stringify({
 		success: true,
 		arr: data
 	}));
 });
 
+
+app.post("/getfillingmode", async (req, res) => { //Get the filling mode status
+	res.send(JSON.stringify({
+		success: true,
+		status: ledsOnFlag
+	}));
+});
 
 app.post("/getsettings", async (req, res) => { //Return the min and max from config
 	console.log("Request for settings");
@@ -188,13 +225,17 @@ app.post("/shutdown", (req, res) => { //Shutdown the computer (if the passcode i
 });
 
 app.post("/fillingmode", async (req, res) => { //Start filling mode (show lights based on current level) for timeout specified
-	let timeout = (req.body && req.body.timeout) || 5; //Default to 5 second timeout
+	let timeout = parseInt(req.body && req.body.timeout);
+	if (isNaN(timeout)) timeout = 300; //Default to 5 minute timeout
+	if (timeout > 900) timeout = 900; //Maximum allowed timeout of 15 minutes
 	console.log(`Request for filling mode with timeout of ${timeout} seconds`);
 	fillingMode(timeout);
 	res.send(JSON.stringify({
-		success: true
+		success: timeout == (req.body && req.body.timout),
+		msg: (timeout == (req.body && req.body.timeout)) ? "Defaulting to 5 minute timeout - invalid timeout supplied" : undefined
 	}));
 });
+
 
 app.get("/data.json", (req, res) => {
 	res.send(JSON.stringify({
@@ -215,5 +256,6 @@ https.createServer(sslOpts, app).listen(HTTPS_PORT, () => { //Create HTTPS serve
 setInterval(async () => {
 	let level = await getCurrentLevel();
 	let currTime = new Date().valueOf();
+	checkMail(level);
 	addDataEntry([currTime, level]);
-}, 15* 60 * 1000); //Add an entry every 15 minutes (15 * 60 * 1000 ms)
+}, 15 * 60 * 1000); //Add an entry every 15 minutes (15 * 60 * 1000 ms)

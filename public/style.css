@@ -56,6 +56,7 @@ svg.wave {
 	margin: auto;
 	z-index: -1;
 	animation: WaveUDMotion	1.5s linear 0s 1 normal, WaveLRMotion 0.75s linear 0s infinite normal;
+	-webkit-animation: WaveUDMotion	1.5s linear 0s 1 normal, WaveLRMotion 0.75s linear 0s infinite normal;
 }
 
 svg.wavebox {
@@ -67,6 +68,7 @@ svg.wavebox {
 	z-index: -1;
 	height: calc( var(--percentfull)*435px + 5px ); /*Scale from 5px to 440px */
 	animation: WaveboxUDMotion 1.5s linear 0s 1 normal;
+	-webkit-animation: WaveboxUDMotion 1.5s linear 0s 1 normal;
 }
 
 @keyframes WaveboxUDMotion {

@@ -24,6 +24,9 @@
 			<a class="nav-link" id="graphTab" data-toggle="tab" href="#graph">Graph</a>
 		</li>			
 		<li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#filling">Filling Mode</a>
+		</li>			
+		<li class="nav-item">
 			<a class="nav-link" id="settingsTab" data-toggle="tab" href="#settings">Settings</a>
 		</li>			
 	</ul>
@@ -102,7 +105,7 @@
 							<div class="input-group-prepend">
 								<label class="input-group-text" for="hoursRange">Hours</label>
 							</div>
-							<input class="input-group-append form-control" type="text" id="hoursRange" name="maxhours" placeholder="24">
+							<input class="input-group-append form-control" type="text" id="hoursRange" name="maxhours" value="24">
 							<div class="input-group-append">
 								<button class="form-control btn btn-primary">Update Hours</button>
 							</div>
@@ -118,6 +121,29 @@
 					Download data as a JSON file: <a href="/data.json">data.json</a>
 				</div>
 			</div>
+		</div>
+		<div class="tab-pane fade" id="filling" role="tabpanel">
+	        	<div class="row py-3">
+	           		<div class="col text-center">
+        	       			<p class="m-0 py-2 h4">Tree Filling Mode</p>
+                			<hr class="w-50">
+					<p class="h3 text-center py-2">Current Status</p>
+					<p class="h4 text-center py-1 text-warning" id="fillingMsg">Loading...</p>
+                			<hr class="w-50">
+					<form id="fillingForm">
+						<div class="input-group px-4">
+							<div class="input-group-prepend">
+								<label class="input-group-text" for="fillingTimeout">Timeout (minutes)</label>
+							</div>
+							<input class="input-group-append form-control" type="text" id="fillingTimeout" name="maxhours" value="10">
+							<div class="input-group-append">
+								<button class="form-control btn btn-primary" id="fillingFormBtn">Start filling mode!</button>
+							</div>
+						</div>
+					</form>
+                			<hr class="w-50">
+            			</div>
+        		</div>
 		</div>
 		<div class="tab-pane fade" id="settings" role="tabpanel">
 			<div class="row py-3">

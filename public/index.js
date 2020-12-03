@@ -92,6 +92,22 @@ const showSettings = (settings) => {
 }
 
 /**
+ * Show the filling mode status
+ * @param {boolean} status Filling status
+ */
+const showFillingMode = (status) => {
+	console.log("Filling status: ", status);
+	document.querySelector("#fillingFormBtn").disabled = status; //Disable button if running/NC
+	if (status === undefined) return;
+	document.querySelector("#fillingMsg").classList.remove("text-warning");
+	document.querySelector("#fillingMsg").classList.toggle("text-success", status);
+	document.querySelector("#fillingMsg").classList.toggle("text-danger", !status);
+	document.querySelector("#fillingMsg").innerText = status ? "Running" : "Not running";
+}
+
+
+
+/**
  * Update a range label with the new range value
  * @param {string} id ID of the range element
  */
@@ -157,6 +173,35 @@ const onShutdownForm = (ev) => {
 		});
 }
 
+/**
+ * Event handler for shutdown form
+ */
+const onFillingForm = (ev) => {
+	ev.preventDefault();
+	fetch("/fillingmode", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			timeout: document.querySelector("#fillingTimeout").value
+		})
+	})
+		.then(res => res.json())
+		.then(res => {
+			if (res.success) {
+				alert("Successfully initiated filling mode");
+			} else {
+				alert("Incorrect value or internal error. Please try again.");
+			}
+			window.location.reload();
+		})
+		.catch(err => {
+			alert("Unexpected error while starting filling mode. Server may be offline.");
+			console.log(err);
+		});
+}
+
 
 //Main page-load logic
 window.onload = () => {
@@ -170,11 +215,16 @@ window.onload = () => {
 		.then(res => res.json())
 		.then(res => showSettings(res.settings));
 
+	fetch("/getfillingmode", { method: "POST" })
+		.then(res => res.json())
+		.then(res => showFillingMode(res.status));
+
 	document.querySelector("#minRange").oninput = () => updateRangeValue("minRange");
 	document.querySelector("#maxRange").oninput = () => updateRangeValue("maxRange");
 
 	document.querySelector("#settingsForm").onsubmit = onSettingsForm;
 	document.querySelector("#shutdownForm").onsubmit = onShutdownForm;
+	document.querySelector("#fillingForm").onsubmit = onFillingForm;
 
 	//Attempt to register service worker
 	if ("serviceWorker" in navigator) {
