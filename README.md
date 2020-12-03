@@ -21,7 +21,7 @@ Then, install the dependencies:
 Once this is done, download this repository with:
   `git clone https://github.com/alex-mous/Tree-Pi.git`
   
-Then,move the contents of the folder to the location of the web server and delete the original folder:
+Then, move the contents of the folder to the location of the web server and delete the original folder:
 ```
 sudo mkdir /server/
 sudo chmod 755 /server/
@@ -32,19 +32,25 @@ sudo rm -r Tree-Pi
 Now change to the location of the web server:
   `cd /server`
 
+Install the code:
+  `npm install .`
+
 And open the config.json file so that you can receive emails:
   `sudo nano config.json`
   Inside of this file, replace YOUR_GMAIL_ADDRESS with your email address (must be Gmail, example: johndoe@gmail.com), YOUR_GMAIL_PASSWORD with your Google/Gmail app password, 
   YOUR_RECEIVING_ADDRESS with the email to which you would like to receive notifications and YOUR_SHUTDOWN_PASSWORD with a passphrase to prevent unauthorized shutdowns.
 
-Next, install the startup script:
+And you can now test the server code:
+  `sudo node index.js`
+
+To run on startup, next install the startup service:
 ```
 sudo cp server.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable server.service
 ```
 
-Then test the server by running:
+Then test the service by running:
   `sudo systemctl start server.service`
   
 If all runs correctly, after a couple of minutes, the server should be available at http://IP_ADDRESS where IP_ADDRESS is the IP address of your Raspberry Pi.
