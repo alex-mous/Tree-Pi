@@ -158,10 +158,17 @@ app.post("/getcurrent", async (req, res) => {
 });
 
 app.post("/getdata", async (req, res) => { //Return the data for a given number of hours back
-	let hours_back = (req.body && req.body.hours_back) || 24; //Default to 24 hours back
-	console.log(`Request for data with a requested amount of ${hours_back} hours back`);
-	let minTime = new Date().valueOf() - (hours_back * 60 * 60 * 1000); //Current millis time minus amount of hours back
-	let data = dataLog.arr.filter((obj) => obj[0] > minTime);
+	let tStart = new Date((req.body && req.body.tStart));
+	let tEnd = new Date((req.body && req.body.tEnd));
+	if (isNaN(tStart.valueOf()) || isNaN(tEnd.valueOf())) {
+		console.log("Failed during running getdata - invalid datetime strings");
+		res.send(JSON.stringify({
+			success: false,
+			msg: "Please provide valid date/time strings for tStart and tEnd"
+		}));
+	}
+	console.log(`Request for data with a requested times of ${tStart} and ${tEnd}`);
+	let data = dataLog.arr.filter((obj) => obj[0] >= tStart && obj[0] <= tEnd);
 	res.send(JSON.stringify({
 		success: true,
 		arr: data

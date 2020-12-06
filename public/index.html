@@ -18,16 +18,16 @@
         </div>
 	<ul class="nav nav-tabs justify-content-center" id="navTabs" role="tablist">
 		<li class="nav-item">
-			<a class="nav-link active" id="homeTab" data-toggle="tab" href="#home">Home</a>
+			<a class="nav-link active" id="homeTab" href="#home">Home</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" id="graphTab" data-toggle="tab" href="#graph">Graph</a>
+			<a class="nav-link" id="graphTab" href="#graph">Graph</a>
 		</li>			
 		<li class="nav-item">
-			<a class="nav-link" data-toggle="tab" href="#filling">Filling Mode</a>
+			<a class="nav-link" id="fillingTab" href="#filling">Filling Mode</a>
 		</li>			
 		<li class="nav-item">
-			<a class="nav-link" id="settingsTab" data-toggle="tab" href="#settings">Settings</a>
+			<a class="nav-link" id="settingsTab" href="#settings">Settings</a>
 		</li>			
 	</ul>
 	<div class="tab-content">
@@ -97,14 +97,21 @@
 	        	<div class="row py-3">
 	           		<div class="col text-center">
         	       			<p class="m-0 py-2 h4">Water Level</p>
-					<p class="m-0 py-1 h5">Over the past <span id="waterLevelHours">24</span> hours</p>
+					<p class="m-0 py-1 h5"><span id="waterLevelTime">(choose a time period below)</span></p>
+                			<hr class="w-50">
+        	       			<p class="m-0 py-2 h4">Predicted Next Reaching 50%</p>
+					<p class="m-0 py-1 h5"><span id="equationRes"></span></p>
                 			<hr class="w-50">
 					<form id="hoursForm">
-						<div class="input-group px-4">
+						<div class="input-group px-4 text-center">
 							<div class="input-group-prepend">
-								<label class="input-group-text" for="hoursRange">Hours</label>
+								<label class="input-group-text" for="timeStart">Start Time</label>
 							</div>
-							<input class="input-group-append form-control" type="text" id="hoursRange" name="maxhours" value="24">
+							<input class="form-control input-group-append" type="datetime-local" id="timeStart" name="timeStart">
+							<div class="input-group-append">
+								<label class="input-group-text" for="timeEnd">End Time</label>
+							</div>
+							<input class="form-control input-group-append" type="datetime-local" id="timeEnd" name="timeEnd">
 							<div class="input-group-append">
 								<button class="form-control btn btn-primary">Update Hours</button>
 							</div>
